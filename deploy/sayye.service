@@ -1,0 +1,33 @@
+[Unit]
+Description=Sayye Spring Boot Application
+After=network.target
+
+[Service]
+Type=simple
+User=ec2-user
+WorkingDirectory=/home/ec2-user/app
+
+# 환경변수 설정 (실제 값은 EC2의 /etc/systemd/system/sayye.service에서 수정 필요)
+# 배포 시 아래 값들을 실제 RDS 정보로 변경:
+# - DB_URL: RDS 엔드포인트 (예: jdbc:postgresql://your-rds.ap-northeast-2.rds.amazonaws.com:5432/database_name)
+# - DB_USERNAME: RDS 사용자명
+# - DB_PASSWORD: RDS 비밀번호
+# - JWT_SECRET: 실제 JWT 시크릿 키 (최소 32자 이상)
+Environment="DB_URL=jdbc:postgresql://your-rds-endpoint:5432/your-database"
+Environment="DB_USERNAME=your-username"
+Environment="DB_PASSWORD=your-password"
+Environment="JWT_SECRET=your-jwt-secret-key-must-be-at-least-32-bytes-long"
+Environment="CORS_ALLOWED_ORIGINS=http://sayye-frontend.s3-website.ap-northeast-2.amazonaws.com,https://sayye-frontend.s3-website.ap-northeast-2.amazonaws.com"
+
+ExecStart=/usr/bin/java -jar /home/ec2-user/app/sayye-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod
+SuccessExitStatus=143
+Restart=always
+RestartSec=10
+
+# 로그 설정
+StandardOutput=append:/home/ec2-user/app/app.log
+StandardError=append:/home/ec2-user/app/app.log
+
+[Install]
+WantedBy=multi-user.target
+
