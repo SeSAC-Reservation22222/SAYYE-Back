@@ -25,8 +25,8 @@ public class RoomService {
         if (roomRepository.existsByRoomName(roomReqDto.getRoomName())) {
             throw new ApiException(ErrorCode.ROOM_NAME_DUPLICATED);
         }
-        Room room = Room.of(roomReqDto);
 
+        Room room = Room.of(roomReqDto);
 
         Room saved = roomRepository.save(room);
 
@@ -35,11 +35,9 @@ public class RoomService {
 
     @Transactional(readOnly = true)
     public RoomResDto getRoomById(Long roomId) {
-
         Room room = roomRepository.findById(roomId).orElseThrow(
             () -> new ApiException(ErrorCode.ROOM_NOT_FOUND)
         );
-
         return RoomResDto.from(room);
     }
 
