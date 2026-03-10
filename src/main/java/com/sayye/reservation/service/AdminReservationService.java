@@ -34,8 +34,8 @@ public class AdminReservationService {
     @Transactional
     public ReservationResDto createAdminReservation(Long roomId, AdminReservationReqDto reqDto,
         String adminId) {
-        // Todo 회의실 존재 여부 검증
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ROOM_NOT_FOUND));
 
         List<Reservation> conflictingReservations = reservationRepository.findConflictingReservations(
             roomId,
