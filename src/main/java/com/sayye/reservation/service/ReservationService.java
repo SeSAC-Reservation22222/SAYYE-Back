@@ -83,11 +83,9 @@ public class ReservationService {
         // 예약 시작 시간이 10시 전이면
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
-        // Todo 회의실 존재 여부 검증
         Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new ApiException(ErrorCode.ROOM_NOT_FOUND));
 
-        // Todo 클래스 존재 여부 검증
         Course course = courseRepository.findById(reqDto.getCourseId())
             .orElseThrow(() -> new ApiException(ErrorCode.COURSE_NOT_FOUND));
 
@@ -96,7 +94,6 @@ public class ReservationService {
             reqDto.getReservationDate());
 
         // 예약자가 예약한 시간에 이미 예약 되어 있다면
-        // Todo room.getId로 수정 필요
         validateOverlap(room.getId(), reqDto.getReservationDate(), reqDto.getStartTime(),
             reqDto.getEndTime(), null);
 
