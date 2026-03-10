@@ -38,8 +38,6 @@ public class ReservationService {
     private static final String SORT_BY = "createdAt";
 
     private final ReservationRepository reservationRepository;
-
-    // Todo service 구현 완료 시 변경 필요
     private final RoomRepository roomRepository;
     private final CourseRepository courseRepository;
 
@@ -86,11 +84,12 @@ public class ReservationService {
         validateReservationTime(reqDto.getStartTime(), reqDto.getEndTime());
 
         // Todo 회의실 존재 여부 검증
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ROOM_NOT_FOUND));
 
         // Todo 클래스 존재 여부 검증
         Course course = courseRepository.findById(reqDto.getCourseId())
-            .orElseThrow(() -> new RuntimeException());
+            .orElseThrow(() -> new ApiException(ErrorCode.COURSE_NOT_FOUND));
 
         // 해당 예약자가 예약 날짜에 이미 예약 했다면
         validateDuplicateUser(reqDto.getUserName(), reqDto.getPhoneLastNumber(),
@@ -108,8 +107,8 @@ public class ReservationService {
 
 
     public List<ReservationResDto> getReservationsByRoomId(Long roomId, LocalDate reservationDate) {
-        // Todo 회의실 존재 여부 검증
-        Room room = roomRepository.findById(roomId).orElseThrow(() -> new RuntimeException());
+        Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new ApiException(ErrorCode.ROOM_NOT_FOUND));
 
         List<Reservation> reservations = reservationRepository.
             findAllByRoomIdAndReservationDateAndStatusNotInOrderByStartTimeAsc(room.getId(),
